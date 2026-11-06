@@ -1,4 +1,4 @@
-import bpy
+import bpy, addon_utils
 import os
 
 from .functions.main_functions import (
@@ -64,6 +64,31 @@ class BONEWIDGET_OT_shared_property_group(bpy.types.PropertyGroup):
     color_sets: bpy.props.CollectionProperty(type=ImportColorSet)
     import_item_data: bpy.props.CollectionProperty(type=ImportItemData)
     image_collection = bpy.utils.previews.new()
+
+
+class BONEWIDGET_OT_open_prefs(bpy.types.Operator):
+    """Opens the Preferences window with Bone Widget addon pre-selected"""
+    bl_idname = "bonewidget.open_prefs"
+    bl_label = "Bone Widget Preferences"
+
+    def execute(self, context):
+        addon_name = "bl_ext.user_default.bone_widget"
+
+        addon_utils.modules_refresh()
+
+        try:
+            mod = addon_utils.addons_fake_modules.get(addon_name)
+            if mod:
+                info = addon_utils.module_bl_info(mod)
+                info["show_expanded"] = True
+        except Exception as e:
+            print("ADDON:", e)
+
+        context.preferences.active_section = "ADDONS"
+        bpy.ops.screen.userpref_show("INVOKE_DEFAULT")
+        bpy.data.window_managers['WinMan'].addon_search = "Bone Widget"
+
+        return {'FINISHED'}
 
 
 class BONEWIDGET_OT_create_widget(bpy.types.Operator):
@@ -1950,6 +1975,7 @@ classes = (
     BONEWIDGET_OT_import_color_presets,
     BONEWIDGET_OT_export_color_presets,
     BONEWIDGET_OT_render_widget_thumbnail,
+    BONEWIDGET_OT_open_prefs,
 )
 
 

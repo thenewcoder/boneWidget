@@ -151,6 +151,10 @@ class BONEWIDGET_PT_bw_panel_main(BONEWIDGET_PT_bw_panel, bpy.types.Panel):
         row = layout.row(align=True)
         row.prop(context.window_manager, "toggle_preview")
 
+        # preferences button
+        row.operator("bonewidget.open_prefs", text="", icon='PREFERENCES')
+        row.separator(factor=0.5)
+
         # filter mode toggle
         row.prop(
             context.window_manager,
